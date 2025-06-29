@@ -1,0 +1,29 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Verify files exist
+        run: |
+          echo "Verificando archivos importantes..."
+          if [ ! -f "README.md" ]; then
+            echo "Error: README.md no encontrado!"
+            exit 1
+          fi
+          echo "Todo correcto - archivos verificados"
+          
+      - name: Build and Deploy to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
